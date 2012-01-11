@@ -26,14 +26,9 @@ if __name__ == '__main__':
     options, args = parser.parse_args()
     
     #
-    # Figure out our input and output file descriptors.
-    #
-    input = len(args) and open(args[0]) or stdin
-    output = len(args) == 2 and open(args[1], 'w') or stdout
-
-    #
     # Read!
     #
+    input = len(args) and open(args[0]) or stdin
     data = load(input)
     
     #
@@ -43,6 +38,7 @@ if __name__ == '__main__':
     encoded = encoder.iterencode(data)
     
     format = '%.' + str(options.precision) + 'f'
+    output = len(args) == 2 and open(args[1], 'w') or stdout
     
     for token in encoded:
         if float_pat.match(token):
