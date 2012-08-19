@@ -4,6 +4,7 @@ from optparse import OptionParser
 from re import compile
 
 float_pat = compile(r'^-?\d+\.\d+(e-?\d+)?$')
+charfloat_pat = compile(r'^[\[,\,]-?\d+\.\d+(e-?\d+)?$')
 
 parser = OptionParser(usage="""%prog [options]
 
@@ -41,7 +42,13 @@ if __name__ == '__main__':
     output = len(args) == 2 and open(args[1], 'w') or stdout
     
     for token in encoded:
-        if float_pat.match(token):
+        if charfloat_pat.match(token):
+            # in python 2.7, we see a character followed by a float literal
+            output.write(token[0] + format % float(token[1:]))
+
+        elif float_pat.match(token):
+            # in python 2.6, we see a simple float literal
             output.write(format % float(token))
+
         else:
             output.write(token)
